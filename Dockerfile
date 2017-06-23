@@ -1,5 +1,5 @@
 FROM ubuntu:xenial
-MAINTAINER Rutger de Knijf <rutger@deknijf.com>
+LABEL maintainer "rutger@deknijf.com"
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -16,15 +16,16 @@ RUN apt-get update && apt-get install -y \
     libqt5svg5-dev \
  && rm -rf /var/lib/apt/lists/*
 
+ENV PGM_VERSION "0.9.0-beta1"
+
 RUN mkdir -p /usr/local/src/pgmodeler
 WORKDIR "/usr/local/src/pgmodeler"
-RUN wget https://github.com/pgmodeler/pgmodeler/archive/v0.9.0-beta1.tar.gz && \
-        tar -xzvf v0.9.0-beta1.tar.gz  && \
-        rm -f v0.9.0-beta1.tar.gz
+RUN wget https://github.com/pgmodeler/pgmodeler/archive/v$PGM_VERSION.tar.gz && \
+        tar -xzvf v$PGM_VERSION.tar.gz  && \
+        rm -f v$PGM_VERSION.tar.gz
 
-RUN cd /usr/local/src/pgmodeler/pgmodeler-0.9.0-beta1/ && qmake pgmodeler.pro && make && make install
+RUN cd /usr/local/src/pgmodeler/pgmodeler-$PGM_VERSION/ && qmake pgmodeler.pro && make && make install
 
 ENV QT_QPA_PLATFORM=offscreen
 
-#CMD /bin/bash
-CMD /usr/local/bin/pgmodeler-cli --input /usr/share/terrible2/db/terrible.dbm --export-to-file --output /usr/share/terrible2/db/terrible.sql
+CMD /usr/local/bin/pgmodeler-cli
